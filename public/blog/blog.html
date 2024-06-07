@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>View Blog - Kaare Dev</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
+    <html data-theme="dark">
+</head>
+
+<body>
+    <main class="container">
+        <nav>
+            <ul>
+                <li><strong>Kaare Dev</strong></li>
+            </ul>
+            <ul>
+                <li><a href="#" class="contrast">About</a></li>
+                <li><a href="#" class="contrast">Services</a></li>
+                <li><a href="#" class="contrast">Products</a></li>
+            </ul>
+        </nav>
+        <article>
+            <header>
+                <h1>{{ .Title }}</h1>
+            </header>
+
+            <body>
+                <p>{{ .Description }}</p>
+            </body>
+            <footer>
+                <p>By Kaare</p>
+            </footer>
+        </article>
+        <footer>© 2024, Kaare Dev</footer>
+    </main>
+</body>
+
+</html>

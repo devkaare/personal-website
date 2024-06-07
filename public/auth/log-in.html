@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Log In - Kaare Dev</title>
+    <script src="https://unpkg.com/htmx.org"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
+    <html data-theme="dark">
+</head>
+
+<body>
+    <main class="container">
+        <nav>
+            <ul>
+                <li><strong>Kaare Dev</strong></li>
+            </ul>
+            <ul>
+                <li><a href="#" class="contrast">About</a></li>
+                <li><a href="#" class="contrast">Services</a></li>
+                <li><a href="#" class="contrast">Products</a></li>
+            </ul>
+        </nav>
+        <form hx-post="/auth/log-in" hx-trigger="submit">
+            <h1>Log Into Account</h1>
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" />
+            <label for="email">Email</label>
+            <input type="text" id="email" name="email" />
+            <p>Email or Username is required to Log In</p>
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" requierd/>
+            <button type="submit">Log In</button>
+            <p>Don't have an account? Sign up <a href="/auth/sign-up">here</a></p>
+        </form>
+        <footer>© 2024, Kaare Dev</footer>
+    </main>
+</body>
+
+</html>

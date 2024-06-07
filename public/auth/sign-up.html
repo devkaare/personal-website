@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sign Up - Kaare Dev</title>
+    <script src="https://unpkg.com/htmx.org"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
+    <html data-theme="dark">
+</head>
+
+<body>
+    <main class="container">
+        <nav>
+            <ul>
+                <li><strong>Kaare Dev</strong></li>
+            </ul>
+            <ul>
+                <li><a href="#" class="contrast">About</a></li>
+                <li><a href="#" class="contrast">Services</a></li>
+                <li><a href="#" class="contrast">Products</a></li>
+            </ul>
+        </nav>
+        <form hx-post="/auth/sign-up" hx-trigger="submit">
+            <h1>Create A New Account</h1>
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required/>
+            <label for="email">Email</label>
+            <input type="text" id="email" name="email" required/>
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required/>
+            <button type="submit">Sign Up</button>
+            <p>Already have an account? Log in <a href="/auth/log-in">here</a></p>
+        </form>
+        <footer>© 2024, Kaare Dev</footer>
+    </main>
+</body>
+
+</html>

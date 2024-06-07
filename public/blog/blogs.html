@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>All Blogs - Kaare Dev</title>
+    <script src="https://unpkg.com/htmx.org"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
+    <html data-theme="dark">
+</head>
+
+<body>
+    <main class="container">
+        <nav>
+            <ul>
+                <li><strong>Kaare Dev</strong></li>
+            </ul>
+            <ul>
+                <li><a href="#" class="contrast">About</a></li>
+                <li><a href="#" class="contrast">Services</a></li>
+                <li><a href="#" class="contrast">Products</a></li>
+            </ul>
+        </nav>
+        <h1>All Blogs</h1>
+        <div>
+            <ul>
+                {{ range . }}
+                <li>
+                    <h2>
+                            <a class="secondary" href="/blog/{{ .Id }}">{{ .Title }}</a>
+                    </h2>
+                </li>
+                <!--<li>-->
+                <!--<p>{{ .Id }}</p>-->
+                <!--</li>-->
+                <hr>
+                {{ end }}
+            </ul>
+        </div>
+        <footer>© 2024, Kaare Dev</footer>
+    </main>
+</body>
+
+</html>
