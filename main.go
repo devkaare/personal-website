@@ -1,14 +1,11 @@
 package main
 
 import (
-	//"encoding/json"
-	"fmt"
-	"github.com/gorilla/mux"
-	"html/template"
-	//"io/ioutil"
 	"errors"
 	"github.com/devkaare/db2"
 	"github.com/google/uuid"
+	"github.com/gorilla/mux"
+	"html/template"
 	"log"
 	"net/http"
 	"path"
@@ -22,8 +19,7 @@ var (
 )
 
 func CreateBlog(title, description string) map[string]interface{} {
-	return map[string]interface{}{
-		"Id":          uuid.New().String(),
+	return map[string]interface{}{"Id": uuid.New().String(),
 		"Title":       title,
 		"Description": description,
 	}
@@ -39,17 +35,15 @@ func CreateUser(username, email, password string) map[string]interface{} {
 	}
 }
 
-func CreateSessionId(username string) (map[string]interface{}, string, time.Time) {
+func CreateSessionId(username string) (map[string]interface{}, string) {
 	id := uuid.New().String()
-	expiryDate := time.Now().Add(180 * 24 * time.Hour)
 
 	user := map[string]interface{}{
 		"Id":       id,
 		"Username": username,
-		"Expires":  expiryDate,
 	}
 
-	return user, id, expiryDate
+	return user, id
 }
 
 func ValidateUser(username, email, password string) bool {
@@ -63,7 +57,28 @@ func ValidateUser(username, email, password string) bool {
 
 func ValidateSessionId(sessionId string) bool {
 	userSession := db.SearchCache(sessionKey, "Id", sessionId)
-	return userSession["Id"] == sessionId
+	if userSession == nil {
+		return false
+	}
+	if userSession["Id"] == sessionId {
+		return true
+	}
+	return false
+}
+
+func ValidateAdminStatus(sessionId string) bool {
+	userSession := db.SearchCache(sessionKey, "Id", sessionId)
+	if userSession == nil || userSession["Id"] != sessionId {
+		return false
+	}
+
+	user := db.SearchCache(userKey, "Username", userSession["Username"])
+	if user == nil {
+		return false
+	}
+	adminPermissionRes := user["Admin"]
+
+	return adminPermissionRes == true
 }
 
 func UploadBlog(w http.ResponseWriter, r *http.Request) {
@@ -78,7 +93,26 @@ func UploadBlog(w http.ResponseWriter, r *http.Request) {
 		if err := tmpl.Execute(w, nil); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
+
 	} else if r.Method == "POST" {
+		// Validate user before initiating upload
+		cookie, err := r.Cookie("session-token")
+		if err != nil {
+			switch {
+			case errors.Is(err, http.ErrNoCookie):
+				http.Error(w, "Cookie not found", http.StatusBadRequest)
+			default:
+				log.Println(err)
+				http.Error(w, "Server error", http.StatusInternalServerError)
+			}
+			return
+		}
+
+		if result := ValidateAdminStatus(cookie.Value); !result {
+			w.Write([]byte("Invalid permissions"))
+			return
+		}
+
 		title := r.PostFormValue("title")
 		description := r.PostFormValue("description")
 
@@ -87,7 +121,7 @@ func UploadBlog(w http.ResponseWriter, r *http.Request) {
 		db.AddToCache(blogKey, blog)
 		db.SaveCache()
 
-		fmt.Fprintf(w, "Received blog post with Title: %s and Description: %s", title, description)
+		w.Write([]byte("Created blog post"))
 	}
 }
 
@@ -111,9 +145,7 @@ func ShowBlogById(w http.ResponseWriter, r *http.Request) {
 func ShowAllBlogs(w http.ResponseWriter, r *http.Request) {
 	// Get all blogs from cache
 	blogs := db.GetCache(blogKey)
-	//for _, blog := range blogs {
-	//fmt.Println(blog)
-	//}
+
 	fp := path.Join("public", "blog/blogs.html")
 	tmpl, err := template.ParseFiles(fp)
 	if err != nil {
@@ -145,21 +177,27 @@ func LogIn(w http.ResponseWriter, r *http.Request) {
 
 		// Validate input
 		if user := ValidateUser(username, email, password); user {
-			userSession, sessionId, expiryDate := CreateSessionId(username)
+			userSession, sessionId := CreateSessionId(username)
 			db.AddToCache(sessionKey, userSession)
 			db.SaveCache()
 
+			expires := time.Now().Add(180 * 24 * time.Hour)
+
 			http.SetCookie(w, &http.Cookie{
-				Name:    "session-token",
-				Value:   sessionId,
-				Expires: expiryDate,
+				Name:     "session-token",
+				Value:    sessionId,
+				Expires:  expires,
+				Path:     "/",
+				HttpOnly: true,
+				Secure:   true,
+				SameSite: http.SameSiteLaxMode,
 			})
 
-			fmt.Fprintf(w, "Valid")
+			w.Write([]byte("Logged in"))
 			return
 		}
 
-		fmt.Fprintf(w, "Invalid credentials, refresh this page and retry!")
+		w.Write([]byte("Invalid credentials, refresh this page and retry!"))
 	}
 }
 
@@ -185,7 +223,7 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 		db.AddToCache(userKey, user)
 		db.SaveCache()
 
-		fmt.Fprintf(w, "Received user with Username: %s, Email: %s and Password: %s", username, email, password)
+		w.Write([]byte("Created user"))
 	}
 }
 
@@ -202,8 +240,7 @@ func GetCookie(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result := ValidateSessionId(cookie.Value)
-	if !result {
+	if result := ValidateSessionId(cookie.Value); !result {
 		w.Write([]byte("Cookie is invalid"))
 		return
 	}
@@ -241,6 +278,19 @@ func AdminCheck(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("User has admin permissions!"))
 }
 
+func LogOut(w http.ResponseWriter, r *http.Request) {
+	http.SetCookie(w, &http.Cookie{
+		Name:     "session-token",
+		Value:    "",
+		Expires:  time.Unix(0, 0),
+		Path:     "/",
+		HttpOnly: true,
+		Secure:   true,
+		SameSite: http.SameSiteLaxMode,
+	})
+	w.Write([]byte("Logged out"))
+}
+
 func main() {
 	db.LoadCache("blogs.json")
 	r := mux.NewRouter()
@@ -253,6 +303,7 @@ func main() {
 	// Account auth handlers
 	r.HandleFunc("/auth/sign-up", SignUp)
 	r.HandleFunc("/auth/log-in", LogIn)
+	r.HandleFunc("/auth/log-out", LogOut)
 	r.HandleFunc("/auth/test", GetCookie)
 	r.HandleFunc("/auth/admin-dash", AdminCheck)
 

@@ -1,9 +1,5 @@
-github.com/devkaare/db2 v0.0.0-20240603205332-63d2f143caac h1:L+s82w35yfMC55fONTwSxLL79BUjhHe2HTPjCTtV9us=
-github.com/devkaare/db2 v0.0.0-20240603205332-63d2f143caac/go.mod h1:TjiZl6yGhOQ2FfTwPEaompB7iPmPQly+L42SwcqFBP0=
-github.com/devkaare/db2 v0.0.0-20240605203833-d1c721c2d3e3 h1:LgybK7PytAypPNvh1HVd5VC47nZSucegi1Iy1BUyIfI=
-github.com/devkaare/db2 v0.0.0-20240605203833-d1c721c2d3e3/go.mod h1:TjiZl6yGhOQ2FfTwPEaompB7iPmPQly+L42SwcqFBP0=
-github.com/devkaare/db2 v0.0.0-20240605214308-753e8e6b4509 h1:2XCDEPBWDf9WS/9Xden/TmzTTWOh0pERTjWaWlp6hf0=
-github.com/devkaare/db2 v0.0.0-20240605214308-753e8e6b4509/go.mod h1:TjiZl6yGhOQ2FfTwPEaompB7iPmPQly+L42SwcqFBP0=
+github.com/devkaare/db2 v0.0.0-20240608215401-8f5f1e8f5454 h1:U+eFbpY2zUIMApvrQdrXMrq1KLoALjOVzUfQUqJaowE=
+github.com/devkaare/db2 v0.0.0-20240608215401-8f5f1e8f5454/go.mod h1:TjiZl6yGhOQ2FfTwPEaompB7iPmPQly+L42SwcqFBP0=
 github.com/google/uuid v1.6.0 h1:NIvaJDMOsjHA8n1jAhLSgzrAzy1Hgr+hNrb57e+94F0=
 github.com/google/uuid v1.6.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
 github.com/gorilla/mux v1.8.1 h1:TuBL49tXwgrFYWhqrNgrUNEY92u81SPhu7sTdzQEiWY=
