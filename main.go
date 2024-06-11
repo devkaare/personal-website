@@ -16,10 +16,12 @@ var (
 	blogKey    = "Blogs"
 	userKey    = "Users"
 	sessionKey = "Sessions"
+	inquiryKey = "Inquiries"
 )
 
 func CreateBlog(title, description string) map[string]interface{} {
-	return map[string]interface{}{"Id": uuid.New().String(),
+	return map[string]interface{}{
+		"Id":          uuid.New().String(),
 		"Title":       title,
 		"Description": description,
 	}
@@ -32,6 +34,15 @@ func CreateUser(username, email, password string) map[string]interface{} {
 		"Email":    email,
 		"Password": password,
 		"Admin":    false,
+	}
+}
+
+func CreateInquiry(username, email, title, description string) map[string]interface{} {
+	return map[string]interface{}{"Id": uuid.New().String(),
+		"Username":    username,
+		"Email":       email,
+		"Title":       title,
+		"Description": description,
 	}
 }
 
@@ -81,7 +92,7 @@ func ValidateAdminStatus(sessionId string) bool {
 	return adminPermissionRes == true
 }
 
-func UploadBlog(w http.ResponseWriter, r *http.Request) {
+func UploadBlogHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		fp := path.Join("public", "blog/upload.html")
 		tmpl, err := template.ParseFiles(fp)
@@ -121,14 +132,13 @@ func UploadBlog(w http.ResponseWriter, r *http.Request) {
 		db.AddToCache(blogKey, blog)
 		db.SaveCache()
 
-		w.Write([]byte("Created blog post"))
+		w.Header().Add("HX-Redirect", "/blog/all")
 	}
 }
 
-func ShowBlogById(w http.ResponseWriter, r *http.Request) {
+func ShowBlogByIdHandler(w http.ResponseWriter, r *http.Request) {
 	id := mux.Vars(r)["id"]
 	blog := db.SearchCache(blogKey, "Id", id)
-	//log.Println(blog)
 
 	fp := path.Join("public", "blog/blog.html")
 	tmpl, err := template.ParseFiles(fp)
@@ -142,7 +152,7 @@ func ShowBlogById(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func ShowAllBlogs(w http.ResponseWriter, r *http.Request) {
+func ShowAllBlogsHandler(w http.ResponseWriter, r *http.Request) {
 	// Get all blogs from cache
 	blogs := db.GetCache(blogKey)
 
@@ -158,7 +168,7 @@ func ShowAllBlogs(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func LogIn(w http.ResponseWriter, r *http.Request) {
+func LogInHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		fp := path.Join("public", "auth/log-in.html")
 		tmpl, err := template.ParseFiles(fp)
@@ -193,15 +203,15 @@ func LogIn(w http.ResponseWriter, r *http.Request) {
 				SameSite: http.SameSiteLaxMode,
 			})
 
-			w.Write([]byte("Logged in"))
+			w.Header().Add("HX-Redirect", "/")
 			return
 		}
 
-		w.Write([]byte("Invalid credentials, refresh this page and retry!"))
+		w.Write([]byte("<h1>Authentication Failed</h1><button onclick='window.location.reload();'>Retry</button>"))
 	}
 }
 
-func SignUp(w http.ResponseWriter, r *http.Request) {
+func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		fp := path.Join("public", "auth/sign-up.html")
 		tmpl, err := template.ParseFiles(fp)
@@ -218,16 +228,146 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 		email := r.PostFormValue("email")
 		password := r.PostFormValue("password")
 
-		// Save blog to database (cache)
 		user := CreateUser(username, email, password)
 		db.AddToCache(userKey, user)
 		db.SaveCache()
 
-		w.Write([]byte("Created user"))
+		w.Header().Add("HX-Redirect", "/auth/log-in")
 	}
 }
 
-func GetCookie(w http.ResponseWriter, r *http.Request) {
+func InquiryHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "GET" {
+		fp := path.Join("public", "support/upload.html")
+		tmpl, err := template.ParseFiles(fp)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		if err := tmpl.Execute(w, nil); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	} else if r.Method == "POST" {
+		cookie, err := r.Cookie("session-token")
+		if err != nil {
+			switch {
+			case errors.Is(err, http.ErrNoCookie):
+				http.Error(w, "Cookie not found", http.StatusBadRequest)
+			default:
+				log.Println(err)
+				http.Error(w, "Server error", http.StatusInternalServerError)
+			}
+			return
+		}
+
+		sessionId := cookie.Value
+		userSession := db.SearchCache(sessionKey, "Id", sessionId)
+		if userSession["Id"] != sessionId {
+			w.Write([]byte("Cookie is invalid"))
+			return
+		}
+
+		user := db.SearchCache(userKey, "Username", userSession["Username"])
+
+        username := user["Username"].(string)
+        email := user["Email"].(string)
+		title := r.PostFormValue("title")
+		description := r.PostFormValue("description")
+
+		inquiry := CreateInquiry(username, email, title, description)
+		db.AddToCache(inquiryKey, inquiry)
+		db.SaveCache()
+
+		w.Write([]byte("Created inquiry"))
+	}
+}
+
+func ShowInquiryByIdHandler(w http.ResponseWriter, r *http.Request) {
+	id := mux.Vars(r)["id"]
+	inquiry := db.SearchCache(inquiryKey, "Id", id)
+	//log.Println(inquiry)
+
+	fp := path.Join("public", "support/inquiry.html")
+	tmpl, err := template.ParseFiles(fp)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if err := tmpl.Execute(w, inquiry); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+func AllInquiriesHandler(w http.ResponseWriter, r *http.Request) {
+	cookie, err := r.Cookie("session-token")
+	if err != nil {
+		switch {
+		case errors.Is(err, http.ErrNoCookie):
+			http.Error(w, "Cookie not found", http.StatusBadRequest)
+		default:
+			log.Println(err)
+			http.Error(w, "Server error", http.StatusInternalServerError)
+		}
+		return
+	}
+
+	sessionId := cookie.Value
+	userSession := db.SearchCache(sessionKey, "Id", sessionId)
+	if userSession["Id"] != sessionId {
+		w.Write([]byte("Cookie is invalid"))
+		return
+	}
+
+	user := db.SearchCache(userKey, "Username", userSession["Username"])
+	adminPermissionRes := user["Admin"]
+	if adminPermissionRes != true {
+		w.Write([]byte("Invalid permissions"))
+		return
+	}
+
+	inquiries := db.GetCache(inquiryKey)
+
+	fp := path.Join("public", "support/inquiries.html")
+	tmpl, err := template.ParseFiles(fp)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if err := tmpl.Execute(w, inquiries); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+func FaqHandler(w http.ResponseWriter, r *http.Request) {
+	fp := path.Join("public", "support/faq.html")
+	tmpl, err := template.ParseFiles(fp)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if err := tmpl.Execute(w, nil); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+func BioHandler(w http.ResponseWriter, r *http.Request) {
+	fp := path.Join("public", "main/bio.html")
+	tmpl, err := template.ParseFiles(fp)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if err := tmpl.Execute(w, nil); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+func GetCookieHandler(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie("session-token")
 	if err != nil {
 		switch {
@@ -248,7 +388,7 @@ func GetCookie(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Cookie is valid"))
 }
 
-func AdminCheck(w http.ResponseWriter, r *http.Request) {
+func AdminCheckHandler(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie("session-token")
 	if err != nil {
 		switch {
@@ -278,7 +418,7 @@ func AdminCheck(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("User has admin permissions!"))
 }
 
-func LogOut(w http.ResponseWriter, r *http.Request) {
+func LogOutHandler(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, &http.Cookie{
 		Name:     "session-token",
 		Value:    "",
@@ -295,19 +435,29 @@ func main() {
 	db.LoadCache("blogs.json")
 	r := mux.NewRouter()
 
+	// Serve static files from the public directory
+	r.PathPrefix("/public/").Handler(http.StripPrefix("/public/", http.FileServer(http.Dir("./public"))))
+
 	// Blog handlers
-	r.HandleFunc("/blog/upload", UploadBlog)
-	r.HandleFunc("/blog/all", ShowAllBlogs)
-	r.HandleFunc("/blog/{id}", ShowBlogById)
+	r.HandleFunc("/blog/upload", UploadBlogHandler)
+	r.HandleFunc("/blog/all", ShowAllBlogsHandler)
+	r.HandleFunc("/blog/{id}", ShowBlogByIdHandler)
 
-	// Account auth handlers
-	r.HandleFunc("/auth/sign-up", SignUp)
-	r.HandleFunc("/auth/log-in", LogIn)
-	r.HandleFunc("/auth/log-out", LogOut)
-	r.HandleFunc("/auth/test", GetCookie)
-	r.HandleFunc("/auth/admin-dash", AdminCheck)
+	// Account authentication handlers
+	r.HandleFunc("/auth/sign-up", SignUpHandler)
+	r.HandleFunc("/auth/log-in", LogInHandler)
+	r.HandleFunc("/auth/log-out", LogOutHandler)
+	r.HandleFunc("/auth/test", GetCookieHandler)
+	r.HandleFunc("/auth/admin-dash", AdminCheckHandler)
 
-	// TODO: Support ticket handlers
+	// Support handlers
+	r.HandleFunc("/support/faq", FaqHandler)
+	r.HandleFunc("/support/inquiry", InquiryHandler)
+	r.HandleFunc("/support/inquiry/all", AllInquiriesHandler)
+	r.HandleFunc("/support/inquiry/{id}", ShowInquiryByIdHandler)
+
+	// Main handlers
+	r.HandleFunc("/", BioHandler)
 
 	log.Println("Server started on port 3000")
 	log.Fatal(http.ListenAndServe(":3000", r))

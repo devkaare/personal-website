@@ -1,1 +1,29 @@
-[{"Users":[{"Admin":true,"Email":"test@example.com","Id":"b29f5411-ddbe-4abf-8d7b-77f2303b7167","Password":"test","Username":"test"}]},{"Sessions":[{"Id":"79f8b4f7-cd44-47cf-abec-357780e2cf51","Username":"test"},{"Id":"e7142e35-2c1c-4d1d-b1a8-369b5f0c6188","Username":"test"},{"Id":"c1e1e21f-3870-44bb-aa01-5069b12a1d99","Username":"test"}]},{"Blogs":[{"Description":"wads","Id":"097b6379-5520-4b0c-9d80-268c0a0a346c","Title":"dwasd"},{"Description":"awsd","Id":"53a25a5b-1d69-4f1a-b9b1-ea586ed7026f","Title":"dwasd"},{"Description":"test","Id":"7e76ff32-6daa-4a18-9e12-6fac26dfeeb3","Title":"test"}]}]
+[
+  {
+    "Users": [
+      {
+        "Admin": true,
+        "Email": "test@example.com",
+        "Id": "3e925263-84c0-4c6a-b373-c7033f012108",
+        "Password": "test",
+        "Username": "test"
+      }
+    ]
+  },
+  {
+    "Sessions": [
+      { "Id": "b0095676-f774-4b25-bd36-c86e2ac0c09e", "Username": "test" }
+    ]
+  },
+  {
+    "Inquiries": [
+      {
+        "Description": "bar",
+        "Email": "test@example.com",
+        "Id": "d8f1c5a2-f41d-4cc5-ab42-85b5c6d90ca0",
+        "Title": "foo",
+        "Username": "test"
+      }
+    ]
+  }
+]

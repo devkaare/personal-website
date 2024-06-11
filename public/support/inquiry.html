@@ -4,8 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Upload Blog - Kaare Dev</title>
-    <script src="https://unpkg.com/htmx.org"></script>
+    <title>View Inquiry - Kaare Dev</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
     <html data-theme="dark">
 </head>
@@ -22,14 +21,21 @@
                 <li><a href="#" class="contrast">Products</a></li>
             </ul>
         </nav>
-        <form hx-post="/blog/upload" hx-trigger="submit">
-            <h1>Upload A New Post</h1>
-            <label for="title">Title</label>
-            <input type="text" id="title" name="title" />
-            <label for="description">Description</label>
-            <textarea type="text" id="description" name="description" value="description"></textarea>
-            <button type="submit">Submit</button>
-        </form>
+        <article>
+            <header>
+                <h1>{{ .Title }}</h1>
+            </header>
+
+            <body>
+                <p>{{ .Username }}</p>
+                <p>{{ .Email }}</p>
+                <hr>
+                <p>{{ .Description }}</p>
+            </body>
+            <footer>
+                <p>By Kaare</p>
+            </footer>
+        </article>
         <footer>© 2024, Kaare Dev</footer>
     </main>
 </body>

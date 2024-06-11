@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Upload Blog - Kaare Dev</title>
+    <title>Upload Support Ticket - Kaare Dev</title>
     <script src="https://unpkg.com/htmx.org"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
     <html data-theme="dark">
@@ -22,14 +22,16 @@
                 <li><a href="#" class="contrast">Products</a></li>
             </ul>
         </nav>
-        <form hx-post="/blog/upload" hx-trigger="submit">
-            <h1>Upload A New Post</h1>
-            <label for="title">Title</label>
-            <input type="text" id="title" name="title" />
-            <label for="description">Description</label>
-            <textarea type="text" id="description" name="description" value="description"></textarea>
-            <button type="submit">Submit</button>
-        </form>
+        <h1>FAQ</h1>
+        <ul>
+            <li>
+                <h2>Q: How do I request a password reset if I've lost access to my account?</h2>
+                <p>A: If you've lost access to your account, please send an email to <a
+                        href="mailto:kaarehogset@gmail.com">kaarehogset@gmail.com</a> using the email address associated
+                    with your account this website - The email should contain necessary info about your account, for
+                    example account username.</p>
+            </li>
+        </ul>
         <footer>© 2024, Kaare Dev</footer>
     </main>
 </body>
