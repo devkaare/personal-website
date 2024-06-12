@@ -1,1 +1,29 @@
-[{"Users":[{"Admin":true,"Email":"test@example.com","Id":"3e925263-84c0-4c6a-b373-c7033f012108","Password":"test","Username":"test"}]},{"Sessions":[{"Id":"b0095676-f774-4b25-bd36-c86e2ac0c09e","Username":"test"},{"Id":"b5d52167-068c-4ce9-8e35-1661f9e8ce91","Username":"test"}]},{"Inquiries":[{"Description":"bar","Email":"test@example.com","Id":"d8f1c5a2-f41d-4cc5-ab42-85b5c6d90ca0","Title":"foo","Username":"test"},{"Description":"dsasd","Email":"test@example.com","Id":"7dda0173-bf9b-47f8-9062-91234a8d914b","Title":"dwa","Username":"test"},{"Description":"dasd","Email":"test@example.com","Id":"663e4918-abd2-4c45-bcd9-eb1b2ca83ed0","Title":"dwa","Username":"test"}]}]
+[
+  {
+    "Users": [
+      {
+        "Admin": true,
+        "Email": "test@example.com",
+        "Id": "3e925263-84c0-4c6a-b373-c7033f012108",
+        "Password": "test",
+        "Username": "test"
+      }
+    ]
+  },
+  {
+    "Sessions": [
+      { "Id": "b0095676-f774-4b25-bd36-c86e2ac0c09e", "Username": "test" }
+    ]
+  },
+  {
+    "Inquiries": [
+      {
+        "Description": "bar",
+        "Email": "test@example.com",
+        "Id": "d8f1c5a2-f41d-4cc5-ab42-85b5c6d90ca0",
+        "Title": "foo",
+        "Username": "test"
+      }
+    ]
+  }
+]
