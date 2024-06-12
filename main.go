@@ -238,6 +238,26 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 
 func InquiryHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
+		_, err := r.Cookie("session-token")
+		if err != nil {
+			switch {
+			case errors.Is(err, http.ErrNoCookie):
+				fp := path.Join("public", "support/error.html")
+				tmpl, err := template.ParseFiles(fp)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+
+				if err := tmpl.Execute(w, map[string]string{"error": "Please create an account before attempting to create inquires"}); err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+				}
+			default:
+				log.Println(err)
+				http.Error(w, "Server error", http.StatusInternalServerError)
+			}
+			return
+		}
 		fp := path.Join("public", "support/upload.html")
 		tmpl, err := template.ParseFiles(fp)
 		if err != nil {
@@ -270,8 +290,8 @@ func InquiryHandler(w http.ResponseWriter, r *http.Request) {
 
 		user := db.SearchCache(userKey, "Username", userSession["Username"])
 
-        username := user["Username"].(string)
-        email := user["Email"].(string)
+		username := user["Username"].(string)
+		email := user["Email"].(string)
 		title := r.PostFormValue("title")
 		description := r.PostFormValue("description")
 
