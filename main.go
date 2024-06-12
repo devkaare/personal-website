@@ -228,9 +228,14 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 		email := r.PostFormValue("email")
 		password := r.PostFormValue("password")
 
-        db.SearchCache(userKey, "Username", username)
         if user := db.SearchCache(userKey, "Username", username); user != nil {
             w.Write([]byte("Username already exists"))
+            return 
+        }
+
+        
+        if user := db.SearchCache(userKey, "Email", email); user != nil {
+            w.Write([]byte("Email already exists"))
             return 
         }
 
