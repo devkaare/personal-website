@@ -5,6 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>View Inquiry - Kaare Dev</title>
+    <script src="https://unpkg.com/htmx.org"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
     <html data-theme="dark">
 </head>
@@ -22,6 +23,7 @@
                 <li><a href="/auth/sign-up" class="contrast">Sign Up</a></li>
                 <li><a href="/support/faq" class="contrast">Faq</a></li>
                 <li><a href="/support/inquiry" class="contrast">Support</a></li>
+                <li><a href="/auth/log-out" class="contrast">Log Out</a></li>
             </ul>
         </nav>
         <article>
@@ -35,9 +37,6 @@
                 <hr>
                 <p>{{ .Description }}</p>
             </body>
-            <footer>
-                <p>By Kaare</p>
-            </footer>
         </article>
         <footer>© 2024, Kaare Dev</footer>
     </main>

@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Info - Kaare Dev</title>
+    <script src="https://unpkg.com/htmx.org"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
+    <html data-theme="dark">
+</head>
+
+<body>
+    <main class="container">
+        <nav>
+            <ul>
+                <li><strong>Kaare Dev</strong></li>
+            </ul>
+            <ul>
+                <li><a href="/" class="contrast">About Me</a></li>
+                <li><a href="/blog/all" class="contrast">View Blogs</a></li>
+                <li><a href="/auth/log-in" class="contrast">Log In</a></li>
+                <li><a href="/auth/sign-up" class="contrast">Sign Up</a></li>
+                <li><a href="/support/faq" class="contrast">Faq</a></li>
+                <li><a href="/support/inquiry" class="contrast">Support</a></li>
+                <li><a href="/auth/log-out" class="contrast">Log Out</a></li>
+            </ul>
+        </nav>
+        <div>
+            <article style="margin-top: 20px;">
+                <strong>Hi, I'm Kaare. I'm using my software and web development skills to create innovative solutions
+                    that improve digital experiences for everyone.</strong>
+            </article>
+        </div>
+        <section>
+            <h2>Programming Languages I Know</h2>
+            <div class="grid">
+                <div>
+                    <img src="/public/main/images/go-logo.png" alt="Go"
+                        style="width:100px;height:80px;margin-bottom: 8px;">
+                    <p style="margin-top: 8px;font-weight: bold;">Go</p>
+                    <progress value="70" max="100" style="width: 100%;"></progress>
+                </div>
+                <div>
+                    <img src="/public/main/images/javascript-logo.png" alt="JavaScript"
+                        style="width:80px;height:80px;margin-bottom: 8px;">
+                    <p style="margin-top: 8px;font-weight: bold;">JavaScript</p>
+                    <progress value="90" max="100" style="width: 100%;"></progress>
+                </div>
+                <div>
+                    <img src="/public/main/images/c-logo.png" alt="C"
+                        style="width:80px;height:80px;margin-bottom: 8px;">
+                    <p style="margin-top: 8px;font-weight: bold;">C</p>
+                    <progress value="50" max="100" style="width: 100%;"></progress>
+                </div>
+                <div>
+                    <img src="/public/main/images/cpp-logo.png" alt="C++"
+                        style="width:80px;height:80px;margin-bottom: 8px;">
+                    <p style="margin-top: 8px;font-weight: bold;">C++</p>
+                    <progress value="40" max="100" style="width: 100%;"></progress>
+                </div>
+                <div>
+                    <img src="/public/main/images/rust-logo.png" alt="Rust"
+                        style="width:100px;height:80px;margin-bottom: 8px;">
+                    <p style="margin-top: 8px;font-weight: bold;">Rust</p>
+                    <progress value="60" max="100" style="width: 100%;"></progress>
+                </div>
+                <div>
+                    <img src="/public/main/images/typescript-logo.png" alt="TypeScript"
+                        style="width:80px;height:80px;margin-bottom: 8px;">
+                    <p style="margin-top: 8px;font-weight: bold;">TypeScript</p>
+                    <progress value="60" max="100" style="width: 100%;"></progress>
+                </div>
+            </div>
+        </section>
+        <section>
+            <h2>Projects</h2>
+            <div>
+                <h3>A Lightweight JSON Database API Wrapper for Go</h3>
+                <p>This is an API wrapper for a lightweight JSON database in Go. It efficiently handles data operations
+                    and provides a seamless interface for developers.
+                    <a href="https://github.com/devkaare/db2/">JSON API Wrapper</a>
+                </p>
+            </div>
+            <div>
+                <h3>A Simple (Strict) JSON Database API Wrapper for Go</h3>
+                <p>This project is a strict JSON database system for Go that uses a pre-defined user struct. It
+                    simplifies data management and storage for small Go applications, but is not reccomended for large
+                    applications due to its limited capabilities.
+                    <a href="https://github.com/devkaare/db/">Strict JSON API Wrapper</a>
+                </p>
+            </div>
+            <div>
+                <h3>Fishfarm Map for Manolin</h3>
+                <p>I've developed a comprehensive fishfarm map for an aquaculture company called Manolin. This project
+                    enhanced the company's ability to monitor and manage their fishfarms effectively.
+                    <a href="https://globalsalmonmap.manolinaqua.com/">Fish Farm Map</a>
+                </p>
+            </div>
+        </section>
+        <footer>© 2024, Kaare Dev</footer>
+    </main>
+</body>
+
+</html>
