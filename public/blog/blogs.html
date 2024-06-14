@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <title>All Blogs - Kaare Dev</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="https://unpkg.com/htmx.org"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
     <html data-theme="dark">
@@ -31,7 +32,7 @@
                 {{ range . }}
                 <li>
                     <h2>
-                            <a class="secondary" href="/blog/{{ .Id }}">{{ .Title }}</a>
+                        <a class="secondary" href="/blog/{{ .Id }}">{{ .Title }}</a>
                     </h2>
                 </li>
                 <!--<li>-->
@@ -41,7 +42,7 @@
                 {{ end }}
             </ul>
         </div>
-        <footer>© 2024, Kaare Dev</footer>
+        <footer>¬© 2024, Kaare Dev</footer>
     </main>
 </body>
 
