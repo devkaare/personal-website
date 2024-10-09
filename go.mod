@@ -1,4 +1,4 @@
-module devkaare-bio
+module portfolio
 
 go 1.22.3
 
